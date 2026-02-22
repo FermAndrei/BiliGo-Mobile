@@ -22,15 +22,14 @@ class ProductCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(color: Colors.grey.shade300),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔹 Product Image
             AspectRatio(
-              aspectRatio: 1, // square image
+              aspectRatio: 1,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
@@ -44,7 +43,6 @@ class ProductCard extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Product Info
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(

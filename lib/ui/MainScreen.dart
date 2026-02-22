@@ -75,129 +75,80 @@ class _MainscreenState extends State<Mainscreen> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.shopping_cart, color: Colors.black45),
+            icon: const Icon(Icons.search, color: Colors.black45),
           ),
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.menu, color: Colors.black45),
+            icon: const Icon(Icons.shopping_cart, color: Colors.black45),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CarouselSlider(
-                items: imgList.map((item) {
-                  return Image.asset(
-                    item,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                  height: 120,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.easeInOut,
-                  viewportFraction: 1.0,
-                  enlargeCenterPage: false,
-                  pauseAutoPlayOnTouch: true,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CarouselSlider(
+              items: imgList.map((item) {
+                return Image.asset(
+                  item,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                );
+              }).toList(),
+              options: CarouselOptions(
+                height: 150,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                autoPlayCurve: Curves.easeInOut,
+                viewportFraction: 1.0,
+                enlargeCenterPage: false,
+                pauseAutoPlayOnTouch: true,
               ),
-              SizedBox(height: 12),
-              Text(
-                'Category',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              SizedBox(height: 12),
-              SizedBox(
-                height: 110,
-                child: FutureBuilder<List<Categories>>(
-                  future: _productsFuture,
+            ),
+            Padding(padding: const EdgeInsets.all(3.0), child: CategordyCard()),
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FutureBuilder<List<Products>>(
+                  future: _product,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
-
                     if (snapshot.hasError) {
                       return Text(snapshot.error.toString());
                     }
-
-                    final categories = snapshot.data!;
-
-                    return ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: categories.length,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      separatorBuilder: (_, __) => const SizedBox(width: 4),
-                      itemBuilder: (context, index) {
-                        final category = categories[index];
-
-                        return SizedBox(
-                          width: 100,
-                          child: CategoryCard(
-                            title: category.name!,
-                            icon: categoryIcon(category.slug!),
-                            onTap: () {
-                              debugPrint('Selected: ${category.slug}');
-                            },
+                    final products = snapshot.data!;
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: products.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 6,
+                            mainAxisSpacing: 6,
+                            childAspectRatio: 0.7,
                           ),
+                      itemBuilder: (context, index) {
+                        final product = products[index];
+                        return ProductCard(
+                          imageUrl: product.thumbnail ?? '',
+                          title: product.title ?? '',
+                          price: product.price ?? 0,
+                          onTap: () {
+                            debugPrint('Open product: ${product.id}');
+                          },
                         );
                       },
                     );
                   },
                 ),
               ),
-              SizedBox(height: 12),
-              FutureBuilder<List<Products>>(
-                future: _product,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  }
-
-                  final products = snapshot.data!;
-
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: products.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.7,
-                        ),
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-
-                      return ProductCard(
-                        imageUrl: product.thumbnail ?? '',
-                        title: product.title ?? '',
-                        price: product.price ?? 0,
-                        onTap: () {
-                          debugPrint('Open product: ${product.id}');
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
