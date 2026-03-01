@@ -5,6 +5,7 @@ import 'package:bilibo/widget/CategordyCard.dart';
 import 'package:bilibo/widget/product_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class Mainscreen extends StatefulWidget {
   const Mainscreen({super.key});
@@ -109,43 +110,65 @@ class _MainscreenState extends State<Mainscreen> {
             Padding(padding: const EdgeInsets.all(3.0), child: CategordyCard()),
             Container(
               color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FutureBuilder<List<Products>>(
-                  future: _product,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    }
-                    final products = snapshot.data!;
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: products.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 6,
-                            mainAxisSpacing: 6,
-                            childAspectRatio: 0.7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Special For You',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-                        return ProductCard(
-                          imageUrl: product.thumbnail ?? '',
-                          title: product.title ?? '',
-                          price: product.price ?? 0,
-                          onTap: () {
-                            debugPrint('Open product: ${product.id}');
+                        ),
+                        TextButton(onPressed: () {}, child: Text('see all')),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: FutureBuilder<List<Products>>(
+                      future: _product,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Text(snapshot.error.toString());
+                        }
+                        final products = snapshot.data!;
+                        return MasonryGridView.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                          itemCount: products.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final product = products[index];
+
+                            return ProductCard(
+                              imageUrl: product.thumbnail ?? '',
+                              title: product.title ?? '',
+                              price: product.price ?? 0,
+                              rating: product.rating ?? 0,
+                              onTap: () {
+                                debugPrint('Open product: ${product.id}');
+                              },
+                            );
                           },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

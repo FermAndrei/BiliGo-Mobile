@@ -4,6 +4,7 @@ class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final double price;
+  final double rating;
   final VoidCallback onTap;
 
   const ProductCard({
@@ -11,6 +12,7 @@ class ProductCard extends StatelessWidget {
     required this.imageUrl,
     required this.title,
     required this.price,
+    required this.rating,
     required this.onTap,
   });
 
@@ -64,6 +66,14 @@ class ProductCard extends StatelessWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
+                    ),
+                  ),
+                  Text(
+                    rating.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                      fontSize: 12,
                     ),
                   ),
                 ],

@@ -15,7 +15,7 @@ class DummyJSON {
 
   Future<List<Products>> fetchProduct() async {
     final response = await apiService.get(
-      '/products?limit=10&skip=10&select=title,price,thumbnail',
+      '/products?limit=10&skip=10&select=title,price,thumbnail,rating',
     );
     print('Tangina mo jepoy dizon $response');
     final List productJson = response['products'];
