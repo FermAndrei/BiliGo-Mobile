@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:bilibo/model/dummyJson_categories.dart';
 import 'package:bilibo/model/dummyJson_product.dart';
 
+import '../model/dummyJson_selected_product.dart';
 import 'api_services.dart';
 
 class DummyJSON {
@@ -17,8 +20,14 @@ class DummyJSON {
     final response = await apiService.get(
       '/products?limit=10&skip=10&select=title,price,thumbnail,rating',
     );
-    print('Tangina mo jepoy dizon $response');
+    print('Products: $response');
     final List productJson = response['products'];
     return productJson.map((json) => Products.fromJson(json)).toList();
+  }
+
+  Future<SelectedProduct> getSelectedProduct(int id) async {
+    final response = await apiService.get('/products/$id');
+    print(response);
+    return SelectedProduct.fromJson(response);
   }
 }

@@ -1,6 +1,6 @@
-import 'package:bilibo/model/dummyJson_categories.dart';
 import 'package:bilibo/model/dummyJson_product.dart';
 import 'package:bilibo/services/dummyJson.dart';
+import 'package:bilibo/ui/product_view.dart';
 import 'package:bilibo/widget/CategordyCard.dart';
 import 'package:bilibo/widget/product_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -47,13 +47,11 @@ IconData categoryIcon(String slug) {
 
 class _MainscreenState extends State<Mainscreen> {
   final DummyJSON _service = DummyJSON();
-  late Future<List<Categories>> _productsFuture;
   late Future<List<Products>> _product;
 
   @override
   void initState() {
     super.initState();
-    _productsFuture = _service.fetchCategory();
     _product = _service.fetchProduct();
   }
 
@@ -160,6 +158,14 @@ class _MainscreenState extends State<Mainscreen> {
                               price: product.price ?? 0,
                               rating: product.rating ?? 0,
                               onTap: () {
+                                final productID = product.id;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductView(selectedId: productID),
+                                  ),
+                                );
                                 debugPrint('Open product: ${product.id}');
                               },
                             );
